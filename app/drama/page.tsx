@@ -5,7 +5,6 @@ import { useState, useEffect, useCallback } from "react";
 import { fetchDramaSearch, FetchAnimeInfo } from "@/fetch";
 import Image from "next/image";
 import Link from "next/link";
-import { PROXY } from "@/config/url";
 
 export default function DramaSearch() {
   const placeholders = [
@@ -95,7 +94,7 @@ export default function DramaSearch() {
                     <CardContent>
                       <Image
                         className="h-2/4 w-full object-cover rounded-xl transition-all aspect-[3/4]"
-                        src={`${PROXY}${item.image}`}
+                        src={`${process.env.TMDB_PROXY_URL}/fetch?url=${item.image}`}
                         width={160}
                         height={160}
                         alt="Manga Poster"

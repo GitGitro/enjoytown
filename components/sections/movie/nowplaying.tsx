@@ -1,9 +1,11 @@
 "use client";
-import { API_KEY, PROXY } from "@/config/url";
+import { FetchMovieInfo } from "@/fetch";
 import Image from "next/image";
 import Link from "next/link";
+import * as React from "react";
 import { Image as ImageIcon } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { API_KEY } from "@/config/url";
+
 import {
   Tooltip,
   TooltipContent,
@@ -11,66 +13,40 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import React from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type TVFeatureType = "airing_today" | "on_the_air" | "popular" | "top_rated";
-
-type TVFeatureProps = {
-  featureType: TVFeatureType;
-};
-type TVShow = {
-  adult: boolean;
-  backdrop_path: string;
-  genre_ids: number[];
+type Movie = {
   id: number;
-  origin_country: string[];
-  original_language: string;
-  original_name: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  first_air_date: string;
-  name: string;
+  title: string;
+  backdrop_path: string | null;
   vote_average: number;
   vote_count: number;
+  overview: string;
 };
 
-type TVData = {
-  page: number;
-  results: TVShow[];
-  total_pages: number;
-  total_results: number;
+type MovieData = {
+  results: Movie[];
 };
 
-export default function FeaturedTV({ featureType }: TVFeatureProps) {
-  const [data, setData] = React.useState<TVData | null>(null);
+export default function TopRated() {
+  const [data, setData] = React.useState<MovieData | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1);
 
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const res = await fetch(
-        `https://api.themoviedb.org/3/tv/${featureType}?api_key=${API_KEY}&page=${currentPage}`,
+        `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`,
         { next: { revalidate: 21600 } }
       );
       const data = await res.json();
+      FetchMovieInfo(data);
       setData(data);
       setLoading(false);
     };
 
     fetchData();
-  }, [featureType, currentPage]);
-  const totalPages = data ? data.total_pages : 1;
+  }, []);
 
   return (
     <main>
@@ -78,7 +54,7 @@ export default function FeaturedTV({ featureType }: TVFeatureProps) {
         <div className="grid w-full grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-3">
           {loading
             ? // Skeleton component while loading
-              Array.from({ length: 20 }).map((_, index) => (
+              Array.from({ length: 18 }).map((_, index) => (
                 <div key={index} className="w-full space-y-2">
                   <Skeleton className="aspect-video w-full rounded-md" />
                   <div className="space-y-1.5">
@@ -89,9 +65,9 @@ export default function FeaturedTV({ featureType }: TVFeatureProps) {
                 </div>
               ))
             : data &&
-              data.results.map((item: any, index: any) => (
+              data.results.slice(0, 18).map((item: any, index: any) => (
                 <Link
-                  href={`/tv/${encodeURIComponent(item.id)}`}
+                  href={`/movie/${encodeURIComponent(item.id)}`}
                   key={index}
                   className="w-full cursor-pointer space-y-2"
                   data-testid="movie-card"
@@ -101,8 +77,8 @@ export default function FeaturedTV({ featureType }: TVFeatureProps) {
                       <Image
                         fill
                         className="object-cover"
-                        src={`${PROXY}https://image.tmdb.org/t/p/original${item.backdrop_path}`}
-                        alt={item.name}
+                        src={`${process.env.TMDB_PROXY_URL}/fetch?url=https://image.tmdb.org/t/p/original${item.backdrop_path}`}
+                        alt={item.title}
                         sizes="100%"
                       />
                     ) : (
@@ -111,7 +87,7 @@ export default function FeaturedTV({ featureType }: TVFeatureProps) {
                   </div>
                   <div className="space-y-1.5">
                     <div className="flex items-start justify-between gap-1">
-                      <span className="">{item.name}</span>
+                      <span className="">{item.title}</span>
 
                       <TooltipProvider>
                         <Tooltip>
@@ -138,43 +114,6 @@ export default function FeaturedTV({ featureType }: TVFeatureProps) {
               ))}
         </div>
       </div>
-      <Pagination className="pt-16">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentPage((prev) => Math.max(prev - 1, 1));
-              }}
-              aria-disabled={currentPage <= 1}
-            />
-          </PaginationItem>
-
-          <PaginationItem>
-            <PaginationLink onClick={(e) => e.preventDefault()}>
-              {currentPage}
-            </PaginationLink>
-          </PaginationItem>
-
-          {totalPages > currentPage + 1 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-
-          <PaginationItem>
-            <PaginationNext
-              onClick={(e) => {
-                e.preventDefault();
-                setCurrentPage((prev) =>
-                  data && prev < totalPages ? prev + 1 : prev
-                );
-              }}
-              aria-disabled={data ? currentPage === totalPages : true}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
     </main>
   );
 }

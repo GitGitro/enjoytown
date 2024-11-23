@@ -10,15 +10,8 @@ import { Image as ImageIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PROXY } from "@/config/url";
 
-type AnimeFeatureType = "recent" | "popular" | "trending";
-
-type AnimeFeatureProps = {
-  featureType: AnimeFeatureType;
-};
-
-export default function FeaturedAnime({ featureType }: AnimeFeatureProps) {
+export default function RecentEpisodes() {
   const [data, setData] = React.useState<IAnimeResult[] | null>(null);
   const [loading, setLoading] = React.useState(true);
 
@@ -27,26 +20,13 @@ export default function FeaturedAnime({ featureType }: AnimeFeatureProps) {
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
-      let res;
-      switch (featureType) {
-        case "recent":
-          res = await anilist.fetchRecentEpisodes();
-          break;
-        case "popular":
-          res = await anilist.fetchPopularAnime(1, 20);
-          break;
-        case "trending":
-          res = await anilist.fetchTrendingAnime(1, 20);
-          break;
-      }
-
+      const res = await anilist.fetchRecentEpisodes();
       setData(res.results);
       setLoading(false);
     };
 
     fetchData();
-  }, [anilist, featureType]);
+  }, [anilist]);
 
   return (
     <main>
@@ -65,7 +45,7 @@ export default function FeaturedAnime({ featureType }: AnimeFeatureProps) {
                 </div>
               ))
             : data &&
-              data.map((item, index) => (
+              data.slice(0, 18).map((item, index) => (
                 <Link
                   href={`/anime/${encodeURIComponent(item.id)}`}
                   key={index}
@@ -77,7 +57,7 @@ export default function FeaturedAnime({ featureType }: AnimeFeatureProps) {
                       <Image
                         fill
                         className="object-cover"
-                        src={`${PROXY}${item.image}`}
+                        src={`${process.env.TMDB_PROXY_URL}/fetch?url=${item.image}`}
                         alt={
                           typeof item.title === "string"
                             ? item.title
@@ -108,24 +88,15 @@ export default function FeaturedAnime({ featureType }: AnimeFeatureProps) {
                         </span>
                       </div>
                       <div className="justify-end flex items-center gap-2">
-                        {item.rating && (
-                          <Badge variant="outline">
-                            {item.rating ? item.rating / 10 : "?"}
-                          </Badge>
-                        )}
                         <Separator orientation="vertical" className="h-6" />
                         <Badge variant="secondary">
-                          {item.episodeNumber
-                            ? item.episodeNumber
-                            : item.totalEpisodes ?? "?"}
+                          {item.episodeNumber ? item.episodeNumber : "?"}
                         </Badge>
                       </div>
                     </div>
 
                     <p className="line-clamp-3 text-xs text-muted-foreground">
-                      {/* Recent only includes ep. title and others only have description */}
                       {item.episodeTitle}
-                      {item.description}
                     </p>
                   </div>
                 </Link>

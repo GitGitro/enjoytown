@@ -9,7 +9,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { env } from "@/env.mjs";
 import { getMangaInfo } from "@/fetch";
-import { PROXY } from "@/config/url";
 
 export default function Read({ params }: any) {
   const chapterId = params.read;
@@ -166,7 +165,7 @@ export default function Read({ params }: any) {
           images.map((item, index) => (
             <div key={index}>
               <Image
-                src={`${PROXY}${item}&headers=https://mangadex.org`}
+                src={`${process.env.TMDB_PROXY_URL}/fetch?url=${item}&headers=https://mangadex.org`}
                 key={index}
                 alt="Pages"
                 width={800}

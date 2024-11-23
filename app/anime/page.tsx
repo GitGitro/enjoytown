@@ -1,4 +1,6 @@
-import FeaturedAnime from "@/components/featured/anime";
+import Popular from "@/components/sections/anime/popular";
+import Trending from "@/components/sections/anime/trending";
+import RecentEpisodes from "@/components/sections/anime/recent-episodes";
 import Carousal from "@/components/carousal/anime";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -25,7 +27,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <FeaturedAnime featureType="trending"/>
+            <Trending />
           </TabsContent>
           <TabsContent value="popular">
             <div className="flex items-center justify-between gap-2 pb-4 py-4">
@@ -39,7 +41,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <FeaturedAnime featureType="popular"/>
+            <Popular />
           </TabsContent>
           <TabsContent value="recent">
             <div className="flex items-center justify-between gap-2 pb-4 py-4">
@@ -51,7 +53,7 @@ export default function Home() {
                 <p className="text-muted-foreground">Episodes released recently</p>
               </div>
             </div>
-            <FeaturedAnime featureType="recent"/>
+            <RecentEpisodes />
           </TabsContent>
         </Tabs>
       </section>

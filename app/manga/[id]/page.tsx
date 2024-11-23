@@ -23,7 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PROXY } from "@/config/url";
 
 export default async function MangaInfo({ params }: any) {
   const id = params.id;
@@ -190,7 +189,7 @@ export default async function MangaInfo({ params }: any) {
                           </CardHeader>
                           <CardContent>
                             <Image
-                              src={`${PROXY}${item.image}`}
+                              src={`${process.env.TMDB_PROXY_URL}/fetch?url=${item.image}`}
                               width={140}
                               height={200}
                               className="rounded-md"

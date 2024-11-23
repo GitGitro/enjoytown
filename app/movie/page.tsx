@@ -1,4 +1,7 @@
-import Featured from "@/components/featured/movie";
+import Popular from "@/components/sections/movie/popular";
+import NowPlaying from "@/components/sections/movie/nowplaying";
+import Upcoming from "@/components/sections/movie/upcoming";
+import TopRated from "@/components/sections/movie/toprated";
 import Carousal from "@/components/carousal/movie";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,7 +30,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <Featured endpoint="popular"/>
+            <Popular />
           </TabsContent>
           <TabsContent value="nowplaying">
             <div className="flex items-center justify-between gap-2 pb-4 py-4">
@@ -41,7 +44,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <Featured endpoint="now_playing"/>
+            <NowPlaying />
           </TabsContent>
           <TabsContent value="toprated">
             <div className="flex items-center justify-between gap-2 pb-4 py-4">
@@ -55,7 +58,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <Featured endpoint="top_rated"/>
+            <TopRated />
           </TabsContent>
           <TabsContent value="upcoming">
             <div className="flex items-center justify-between gap-2 pb-4 py-4">
@@ -69,7 +72,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <Featured endpoint="upcoming"/>
+            <Upcoming />
           </TabsContent>
         </Tabs>
       </section>
