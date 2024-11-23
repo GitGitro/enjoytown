@@ -1,7 +1,7 @@
-import VideoPlayer from '@/components/containers/movie/videoplayer';
+import VideoPlayer from "@/components/containers/movie/videoplayer";
 
 export default async function Info({ params }: any) {
-  const id = (await params).id;
+  const id = params.id;
 
   return <VideoPlayer id={id} />;
 }

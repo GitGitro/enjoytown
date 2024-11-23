@@ -1,5 +1,4 @@
-import { Icons } from '@/components/common/icons';
-import { Genre } from '@/lib/tmdb/utils/common';
+import { Icons } from "@/components/common/icons";
 
 export interface AnimeShow {
   id: string;
@@ -30,27 +29,35 @@ export interface AnimeShow {
 }
 
 export interface Show {
-  id: number;
-  poster_path: string;
-  overview: string;
+  adult: boolean;
+  backdrop_path: string;
   genre_ids: number[];
+  id: number;
   original_language: string;
+  original_title: string;
+  original_name: string;
+  name: string;
+  genres: any;
+  tagline: string;
+  media_type: string;
+  overview: string;
   popularity: number;
-  vote_count: number;
+  first_air_date: string;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  video: boolean;
   vote_average: number;
-  backdrop_path?: string;
-  // Movie-specific properties
-  adult?: boolean;
-  video?: boolean;
-  title?: string;
-  original_title?: string;
-  release_date?: string;
-  // TvSerie-specific properties
-  name?: string;
-  original_name?: string;
-  first_air_date?: string;
+  vote_count: number;
   origin_country?: string[];
-  genres?: Genre[];
+  status?: string;
+  last_air_date?: string;
+  number_of_seasons?: number;
+  number_of_episodes?: number;
+  runtime?: number;
+  budget?: number;
+  revenue?: number;
+  spoken_languages: any;
 }
 
 export interface data_types {

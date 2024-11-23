@@ -1,18 +1,24 @@
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import CarousalCard from '@/components/common/card';
-import { tmdb } from '@/lib/tmdb';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Show } from "@/types";
+import CarousalCard from "@/components/common/card";
+import { fetchTvCarousalData } from "@/fetch";
 
 export default async function CarousalComponent() {
-  const trending = await tmdb.tv.trending('day', 'en-US');
-  if (!trending) return <div>None Found</div>;
-
+  const data = await fetchTvCarousalData("discover");
+  if (!data) return <div>None Found</div>;
   return (
     <>
-      <Carousel className="mb-10">
-        <CarouselContent className="mx-auto flex w-full">
-          {trending.results?.map((tvShow) => (
-            <CarouselItem key={tvShow.id}>
-              <CarousalCard show={tvShow} type="tv" />
+      <Carousel className="mb-10 ">
+        <CarouselContent className="w-full mx-auto flex ">
+          {data?.map((el: Show) => (
+            <CarouselItem key={el.id}>
+              <CarousalCard isDetailsPage={false} show={el} type="tv" />
             </CarouselItem>
           ))}
         </CarouselContent>
